@@ -34,6 +34,38 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.5.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<!-- Don’t generate a dependency-reduced-pom (avoids messing up parent pom) -->
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<relocations>
+								<!-- Optional: relocate luaj-core to avoid conflicts -->
+								<!--
+                                <relocation>
+                                    <pattern>org.luaj.vm2</pattern>
+                                    <shadedPattern>my.shaded.org.luaj.vm2</shadedPattern>
+                                </relocation>
+                                -->
+							</relocations>
+							<transformers>
+								<!-- Fix MANIFEST.MF so you can run with java -jar -->
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.luaj.vm2.Lua</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>com.helger.maven</groupId>
 				<artifactId>ph-javacc-maven-plugin</artifactId>
 				<executions>
@@ -71,7 +103,15 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 </project>

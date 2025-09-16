@@ -21,6 +21,7 @@
 ******************************************************************************/
 package org.luaj.vm2.lib.jse;
 
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -60,13 +61,15 @@ class JavaMethod extends JavaMember {
 
 	final Method method;
 
+	private final boolean test = false;
+
 	private JavaMethod(Method m) {
 		super(m.getParameterTypes(), m.getModifiers());
 		this.method = m;
 		try {
 			if (!m.isAccessible())
 				m.setAccessible(true);
-		} catch (SecurityException s) {
+		} catch (SecurityException | InaccessibleObjectException ignored) {
 		}
 	}
 
